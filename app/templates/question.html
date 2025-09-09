@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LeetCode Flashcards</title>
+</head>
+<body>
+    <h1>{{ problem['title'] }}</h1>
+    <h3>Difficulty: {{ problem['difficulty'] }} | Language: {{ lang }}</h3>
+    
+    <p><strong>Question:</strong></p>
+    <pre>{{ problem['content'] }}</pre>
+
+    <p><strong>Answer:</strong></p>
+    <pre>{{ answer }}</pre>
+
+    <p>Question {{ idx+1 }} / {{ total }}</p>
+
+    <a href="{{ url_for('navigate', direction='prev', idx=idx) }}">Previous</a>
+    |
+    <a href="{{ url_for('navigate', direction='next', idx=idx) }}">Next</a>
+    |
+    <a href="{{ url_for('flip', idx=idx) }}">Flip</a>
+</body>
+</html>
