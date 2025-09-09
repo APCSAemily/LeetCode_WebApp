@@ -48,23 +48,23 @@ def navigate(direction, idx):
         "question.html",
         problem=question,
         idx=curr_idx,
-        max_idx=len(leet_list) - 1
+        total=len(leet_list),
+        flip=False  # default view shows question
     )
     
 @app.route("/flip/<int:idx>")
 def flip(idx):
-    # Flip the flashcard at index `idx`
-    # You can toggle a global or session variable for the flip state
     global curr_idx
     curr_idx = idx
-    # Example: flip logic handled in template
+
     return render_template(
         "question.html",
         problem=leet_list[curr_idx],
         idx=curr_idx,
         total=len(leet_list),
-        flip=True
-)
+        flip=True  # flipped view shows answer
+    )
+
 
 
 
