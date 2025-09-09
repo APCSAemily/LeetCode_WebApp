@@ -46,7 +46,7 @@ def navigate(direction, idx):
 
     return render_template(
         "question.html",
-        question=question,
+        problem=question,
         idx=curr_idx,
         max_idx=len(leet_list) - 1
     )
