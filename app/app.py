@@ -62,8 +62,10 @@ def flip(idx):
         "question.html",
         problem=leet_list[curr_idx],
         idx=curr_idx,
-        max_idx=len(leet_list) - 1
-    )
+        total=len(leet_list),
+        flip=True
+)
+
 
 
 if __name__ == "__main__":
