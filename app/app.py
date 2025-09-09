@@ -1,66 +1,56 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, request, redirect, url_for
 import jsonlines
 import random
+import os
 
 app = Flask(__name__)
 
-# Global state
+# Load JSON file (outside app folder)
+JSON_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "leetcode-solutions.jsonl")
+
+# Global variables
 leet_list = []
 curr_idx = 0
-flip = False
-lang = "c++"  # default language
-difficulty = "Random"  # default difficulty
 
-def load_problems(difficulty_filter="Random"):
+def load_questions(difficulty="Random"):
     global leet_list, curr_idx
     leet_list = []
-    with jsonlines.open("leetcode-solutions.jsonl") as reader:
-        if difficulty_filter == "Random":
-            leet_list = [line for line in reader]
-        else:
-            leet_list = [line for line in reader if line["difficulty"] == difficulty_filter]
+    with jsonlines.open(JSON_PATH) as reader:
+        for line in reader:
+            if difficulty == "Random" or line["difficulty"] == difficulty:
+                leet_list.append(line)
     random.shuffle(leet_list)
     curr_idx = 0
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global lang, difficulty
+    global curr_idx
     if request.method == "POST":
-        lang = request.form.get("language", "c++")
         difficulty = request.form.get("difficulty", "Random")
-        load_problems(difficulty)
-        return redirect(url_for("show_question", idx=0))
-    return render_template("index.html", languages=["c++", "Python", "Java", "Javascript"], difficulties=["Random","Easy","Medium","Hard"])
+        load_questions(difficulty)
+    if not leet_list:
+        load_questions()
+    return redirect(url_for("navigate", direction="current", idx=0))
 
-@app.route("/question/<int:idx>")
-def show_question(idx):
-    global curr_idx, flip, lang
-    curr_idx = idx
-    if idx < 0 or idx >= len(leet_list):
-        return "No more problems!", 404
-    problem = leet_list[idx]
+@app.route("/navigate/<direction>/<int:idx>")
+def navigate(direction, idx):
+    global curr_idx
+    if direction == "next" and idx < len(leet_list) - 1:
+        curr_idx = idx + 1
+    elif direction == "prev" and idx > 0:
+        curr_idx = idx - 1
+    elif direction == "current":
+        curr_idx = idx
+
+    question = leet_list[curr_idx] if leet_list else None
+
     return render_template(
         "question.html",
-        problem=problem,
-        idx=idx,
-        total=len(leet_list),
-        show_answer=flip,
-        lang=lang,
+        question=question,
+        idx=curr_idx,
+        max_idx=len(leet_list) - 1
     )
-
-@app.route("/flip/<int:idx>")
-def flip_card(idx):
-    global flip
-    flip = not flip
-    return redirect(url_for("show_question", idx=idx))
-
-@app.route("/next/<int:idx>")
-def next_question(idx):
-    return redirect(url_for("show_question", idx=idx + 1))
-
-@app.route("/prev/<int:idx>")
-def prev_question(idx):
-    return redirect(url_for("show_question", idx=idx - 1))
 
 if __name__ == "__main__":
     app.run(debug=True)
+
