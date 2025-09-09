@@ -1,0 +1,4 @@
+Flask==2.3.5
+Pillow==11.3.0
+jsonlines==4.0.0
+pandas==2.1.1
