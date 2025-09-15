@@ -27,7 +27,7 @@
                 {% for lang, code in problem['answer'].items() %}
                     {% if lang != 'explanation' %}
                         <h3>{{ lang }}</h3>
-                        <pre>{{ code }}</pre>
+                        <pre>{{ code | e }}</pre>
                     {% endif %}
                 {% endfor %}
                 {% if problem['answer'].get('formatted_explanation') %}
@@ -46,9 +46,11 @@
         <div class="navigation">
             <a href="{{ url_for('navigate', direction='prev', idx=idx) }}" {% if idx == 0 %}class="disabled"{% endif %}>Previous</a>
             <a href="{{ url_for('navigate', direction='next', idx=idx) }}" {% if idx == total - 1 %}class="disabled"{% endif %}>Next</a>
-            <a href="{{ url_for('flip', idx=idx, flip='false' if flip else 'true') }}">
+            <a href="{{ url_for('flip', idx=idx, show_answer='false' if flip else 'true') }}">
             {% if flip %}Show Question{% else %}Show Answer{% endif %}
             </a>
+
+
 
 
         </div>
@@ -57,3 +59,4 @@
     {% endif %}
 </body>
 </html>
+
