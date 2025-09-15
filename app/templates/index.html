@@ -1,26 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>LeetCode Flashcards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        form {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>LeetCode Flashcards</h1>
     <form method="POST">
         <label for="language">Select Language:</label>
-        <select name="language" id="language">
+        <select name="language" id="language" required>
+            <option value="" disabled selected>Select a language</option>
             {% for l in languages %}
-            <option value="{{ l }}">{{ l }}</option>
+                <option value="{{ l }}">{{ l }}</option>
             {% endfor %}
         </select>
-        <br><br>
+
         <label for="difficulty">Select Difficulty:</label>
-        <select name="difficulty" id="difficulty">
+        <select name="difficulty" id="difficulty" required>
+            <option value="" disabled selected>Select difficulty</option>
             {% for d in difficulties %}
-            <option value="{{ d }}">{{ d }}</option>
+                <option value="{{ d }}">{{ d }}</option>
             {% endfor %}
         </select>
-        <br><br>
+
         <button type="submit">Start Flashcards</button>
     </form>
 </body>
 </html>
+
