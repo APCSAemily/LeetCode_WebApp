@@ -109,8 +109,8 @@ def flip(idx):
         if question.get('answer') and question['answer'].get('explanation'):
             question['answer']['formatted_explanation'] = format_markdown(question['answer']['explanation'])
 
-    # Determine flip state from query param ?flip=true/false
-    show_answer = request.args.get('flip', 'true').lower() == 'true'
+    # Get flip state from query param, default to True
+    show_answer = request.args.get('show_answer', 'true').lower() == 'true'
 
     return render_template(
         "question.html",
