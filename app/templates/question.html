@@ -3,27 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>LeetCode Flashcards</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
+        h1, h2, h3 { margin-bottom: 6px; }
+        .card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        pre { background: #f0f0f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-family: monospace; }
+        .content { line-height: 1.6; margin: 12px 0; }
+        .navigation { text-align: center; margin-top: 20px; }
+        .navigation a { display: inline-block; margin: 0 10px; padding: 10px 16px; background: #007BFF; color: #fff; text-decoration: none; font-weight: bold; border-radius: 6px; }
+        .navigation a.disabled { background: #aaa; pointer-events: none; }
+    </style>
 </head>
 <body>
     {% if problem %}
-        <h1>{{ problem['title'] }}</h1>
-        <h3>Difficulty: {{ problem['difficulty'] }}</h3>
+        <div class="card">
+            <h1>{{ problem['title'] }}</h1>
+            <h3>Difficulty: {{ problem['difficulty'] }}</h3>
+        </div>
 
         {% if flip %}
-            <p><strong>Answer:</strong></p>
-            <pre>{{ problem['solution'] }}</pre>
+            <div class="card">
+                <h2>Answer:</h2>
+                {% for lang, code in problem['answer'].items() %}
+                    {% if lang != 'explanation' %}
+                        <h3>{{ lang }}</h3>
+                        <pre>{{ code }}</pre>
+                    {% endif %}
+                {% endfor %}
+                {% if problem['answer'].get('formatted_explanation') %}
+                    <div class="content">{{ problem['answer']['formatted_explanation']|safe }}</div>
+                {% endif %}
+            </div>
         {% else %}
-            <p><strong>Question:</strong></p>
-            <pre>{{ problem['content'] }}</pre>
+            <div class="card">
+                <h2>Question:</h2>
+                <div class="content">{{ problem.get('formatted_content', problem['content'])|safe }}</div>
+            </div>
         {% endif %}
 
-        <p>Question {{ idx + 1 }} / {{ total }}</p>
+        <p style="text-align:center;">Question {{ idx + 1 }} / {{ total }}</p>
 
-        <a href="{{ url_for('navigate', direction='prev', idx=idx) }}">Previous</a>
-        |
-        <a href="{{ url_for('navigate', direction='next', idx=idx) }}">Next</a>
-        |
-        <a href="{{ url_for('flip', idx=idx) }}">Flip</a>
+        <div class="navigation">
+            <a href="{{ url_for('navigate', direction='prev', idx=idx) }}" {% if idx == 0 %}class="disabled"{% endif %}>Previous</a>
+            <a href="{{ url_for('navigate', direction='next', idx=idx) }}" {% if idx == total - 1 %}class="disabled"{% endif %}>Next</a>
+            <a href="{{ url_for('flip', idx=idx, flip='false' if flip else 'true') }}">
+            {% if flip %}Show Question{% else %}Show Answer{% endif %}
+            </a>
+
+
+        </div>
     {% else %}
         <p>No questions loaded.</p>
     {% endif %}
